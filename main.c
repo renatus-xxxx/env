@@ -9,9 +9,10 @@
 #define QMP6988_PRESSURE_MSB_REG 0xF7 /* Pressure MSB Register */
 
 typedef struct sEnvIII{
-  float temp; // SHT30
-  float humi;
-  float pres; // QMP6988
+  float ctmp; /* SHT30 (Temperature in Celsius)    */
+  float ftmp; /*       (Temperature in Fahrenheit) */
+  float humi; /*       (Relative Humidity)         */
+  float pres; /* QMP6988 */
 } EnvIII;
 
 void software_reset(){
@@ -41,8 +42,9 @@ void get_env(EnvIII* env) { // https://github.com/m5stack/M5Unit-ENV/blob/master
   buf[0] = 0x2C;
   buf[1] = 0x06;
   iotputb("device/i2c_a/" SLAVE_ADDR_SHT30, buf, 2);
-  iotgetb("device/i2c_a/" SLAVE_ADDR_SHT30, buf); // warning 16 bytes write! (but using only 6 bytes)
-  env->temp = ((((buf[0] * 256.0f) + buf[1]) * 175.0f) / 65535.0f) - 45.0f;
+  iotgetb("device/i2c_a/" SLAVE_ADDR_SHT30, buf); // warning 16 bytes write! (but use only 6 bytes)
+  env->ctmp = ((((buf[0] * 256.0f) + buf[1]) * 175.0f) / 65535.0f) - 45.0f;
+  env->ftmp = (env->ctmp * 1.8f) + 32.0f;
   env->humi = ((((buf[3] * 256.0)  + buf[4]) * 100.0f) / 65535.0);
 }
 
@@ -77,7 +79,8 @@ int main( int argc, char *argv[]) {
   EnvIII env;
   get_env(&env);
   calc_pressure(&env);
-  printf("temperature: %2.0f %cC\n", env.temp, 0xdf);
+  printf("temperature: %2.0f %cC\n", env.ctmp, 0xdf);
+  printf("temperature: %2.0f %cF\n", env.ftmp, 0xdf);
   printf("humidity   : %2.0f %c\n",  env.humi, 0x25);
   printf("pressure   : %2.0f Pa",    env.pres);
   return 0;
