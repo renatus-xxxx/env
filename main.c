@@ -2,8 +2,8 @@
 #include <string.h>
 #include "libiot.h"
 
-#define SLAVE_ADDR_SHT30   "44"
-#define SLAVE_ADDR_QMP6988 "70"
+#define SLAVE_ADDR_SHT30   "44" /* https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/docs/datasheet/unit/SHT3x_Datasheet_digital.pdf */
+#define SLAVE_ADDR_QMP6988 "70" /* https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/docs/datasheet/unit/enviii/QMP6988%20Datasheet.pdf */
 
 #define QMP6988_RESET_REG        0xE0 /* Device reset register */
 #define QMP6988_PRESSURE_MSB_REG 0xF7 /* Pressure MSB Register */
