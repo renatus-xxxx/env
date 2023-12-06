@@ -29,7 +29,7 @@ void qmp6988_init() { //https://github.com/m5stack/M5Unit-ENV/blob/355806b287188
   software_reset();
 }
 
-void calc_pressure(EnvIII* env) { // https://github.com/m5stack/M5Unit-ENV/blob/355806b28718852b95c94d3965858202444ae3e7/src/QMP6988.cpp#L302
+void qmp6988_calc_pressure(EnvIII* env) { // https://github.com/m5stack/M5Unit-ENV/blob/355806b28718852b95c94d3965858202444ae3e7/src/QMP6988.cpp#L302
   unsigned char buf[16];
   buf[0] = QMP6988_PRESSURE_MSB_REG; // read pressure
   iotputb("device/i2c_a/" SLAVE_ADDR_QMP6988, buf, 1);
@@ -82,7 +82,7 @@ int main( int argc, char *argv[]) {
   EnvIII env;
   get_env(&env);
   qmp6988_init();
-  calc_pressure(&env);
+  qmp6988_calc_pressure(&env);
   printf("temperature: %2.0f %cC\n", env.ctmp, 0xdf);
   printf("temperature: %2.0f %cF\n", env.ftmp, 0xdf);
   printf("humidity   : %2.0f %c\n",  env.humi, 0x25);
